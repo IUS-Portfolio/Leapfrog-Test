@@ -13,15 +13,15 @@ import io.reactivex.functions.Function;
  */
 public class LoginWithEmail {
 
-    AuthenticationRepository authenticationRepository;
-    PreferencesRepository preferencesRepository;
+    private AuthenticationRepository authenticationRepository;
+    private PreferencesRepository preferencesRepository;
 
-    LoginWithEmail(AuthenticationRepository authenticationRepository, PreferencesRepository preferencesRepository) {
+    public LoginWithEmail(AuthenticationRepository authenticationRepository, PreferencesRepository preferencesRepository) {
         this.authenticationRepository = authenticationRepository;
         this.preferencesRepository = preferencesRepository;
     }
 
-    Observable<Boolean> loginWithEmail(String email, String password) {
+    public Observable<Boolean> execute(String email, String password) {
         return authenticationRepository.login(email, password)
                 .flatMap(new Function<User, ObservableSource<Boolean>>() {
                     @Override
