@@ -56,7 +56,7 @@ public class LoginWithEmailTest {
         verify(preferencesRepository).saveUserDetails(user);
         verifyNoMoreInteractions(authenticationRepository);
         verifyNoMoreInteractions(preferencesRepository);
-        testObserver.assertNoErrors();
+        testObserver.assertResult(true);
     }
 
     @Test
@@ -68,7 +68,6 @@ public class LoginWithEmailTest {
                 throw new Exception();
             }
         }));
-        when(preferencesRepository.saveUserDetails(user)).thenReturn(Observable.just(true));
 
         loginWithEmail.execute(EMAIL, PASSWORD).subscribe(testObserver);
 

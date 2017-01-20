@@ -20,12 +20,20 @@ public class LoginPresenter {
         this.observerThreadScheduler = observerThreadScheduler;
     }
 
-    public void initialize(LoginView loginView) {
+    public void attachView(LoginView loginView) {
         this.loginView = loginView;
     }
 
+    public void detachView() {
+        this.loginView = null;
+    }
+
+    public void dispose() {
+        compositeDisposable.dispose();
+    }
+
     public void performLogin(String email, String password) {
-        loginWithEmail.execute(email, password)
+        DisposableObserver disposable = loginWithEmail.execute(email, password)
                 .observeOn(observerThreadScheduler)
                 .subscribeWith(new DisposableObserver<Boolean>() {
                     @Override
@@ -36,7 +44,8 @@ public class LoginPresenter {
 
                     @Override
                     public void onError(Throwable exception) {
-
+                        Timber.e(exception);
+                        loginView.showLoginError(exception.getMessage());
                     }
 
                     @Override
@@ -44,6 +53,7 @@ public class LoginPresenter {
 
                     }
                 });
+        compositeDisposable.add(disposable);
     }
 
 }

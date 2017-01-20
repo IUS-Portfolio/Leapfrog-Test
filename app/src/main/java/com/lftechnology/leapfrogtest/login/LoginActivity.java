@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         PreferencesRepository preferencesRepository = new MockPreferencesRepository();
         LoginWithEmail loginWithEmail = new LoginWithEmail(authenticationRepository, preferencesRepository);
         loginPresenter = new LoginPresenter(loginWithEmail, AndroidSchedulers.mainThread());
-        loginPresenter.initialize(this);
+        loginPresenter.attachView(this);
 
     }
 
