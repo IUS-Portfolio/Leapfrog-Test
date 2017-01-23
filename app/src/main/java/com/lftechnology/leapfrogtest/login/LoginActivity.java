@@ -7,6 +7,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.lftechnology.leapfrogtest.R;
+import com.lftechnology.leapfrogtest.UseCaseExecutor;
 import com.lftechnology.leapfrogtest.data.MockAuthenticationRepository;
 import com.lftechnology.leapfrogtest.data.MockPreferencesRepository;
 import com.lftechnology.leapfrogtest.domain.repository.AuthenticationRepository;
@@ -17,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 import static com.lftechnology.leapfrogtest.utils.UiUtils.extractString;
 
@@ -48,7 +50,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         AuthenticationRepository authenticationRepository = new MockAuthenticationRepository();
         PreferencesRepository preferencesRepository = new MockPreferencesRepository();
         LoginWithEmail loginWithEmail = new LoginWithEmail(authenticationRepository, preferencesRepository);
-        loginPresenter = new LoginPresenter(loginWithEmail, AndroidSchedulers.mainThread());
+        loginPresenter = new LoginPresenter(new UseCaseExecutor(AndroidSchedulers.mainThread()), loginWithEmail);
         loginPresenter.attachView(this);
 
     }
@@ -75,6 +77,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     @Override
     public void navigateToLandingPage() {
-
+        Timber.d("Login Successful");
     }
 }

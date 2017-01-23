@@ -6,5 +6,5 @@ import io.reactivex.Observable;
 
 public interface PreferencesRepository {
 
-    Observable<Boolean> saveUserDetails(User user);
+    Observable<User> saveUserDetails(User user);
 }

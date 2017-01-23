@@ -8,7 +8,7 @@ import io.reactivex.Observable;
 public class MockPreferencesRepository implements PreferencesRepository {
 
     @Override
-    public Observable<Boolean> saveUserDetails(User user) {
-        return Observable.just(true);
+    public Observable<User> saveUserDetails(User user) {
+        return Observable.just(user);
     }
 }

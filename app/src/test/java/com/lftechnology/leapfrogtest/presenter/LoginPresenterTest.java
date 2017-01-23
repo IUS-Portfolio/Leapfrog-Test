@@ -1,5 +1,6 @@
 package com.lftechnology.leapfrogtest.presenter;
 
+import com.lftechnology.leapfrogtest.UseCaseExecutor;
 import com.lftechnology.leapfrogtest.data.MockAuthenticationRepository;
 import com.lftechnology.leapfrogtest.data.MockPreferencesRepository;
 import com.lftechnology.leapfrogtest.domain.usecase.LoginWithEmail;
@@ -32,26 +33,14 @@ public class LoginPresenterTest {
     public void setup() {
         Scheduler scheduler = Schedulers.single();
         LoginWithEmail loginWithEmail = new LoginWithEmail(new MockAuthenticationRepository(), new MockPreferencesRepository());
-        loginPresenter = new LoginPresenter(loginWithEmail, scheduler);
-    }
-
-    @Test
-    public void performLogin_successfulCase_shouldOpenLandingPage() {
-        String email = "ius.maharjan@gmail.com";
-        String password = "Test123";
+        loginPresenter = new LoginPresenter(new UseCaseExecutor(scheduler), loginWithEmail);
         loginPresenter.attachView(loginView);
-
-        loginPresenter.performLogin(email, password);
-
-        verify(loginView).navigateToLandingPage();
-        verifyNoMoreInteractions(loginView);
     }
 
     @Test
     public void performLogin_invalidCredentials_shouldThrowException() {
         String email = "123";
-        String password = "Test123";
-        loginPresenter.attachView(loginView);
+        String password = "Test";
 
         loginPresenter.performLogin(email, password);
 
@@ -59,10 +48,20 @@ public class LoginPresenterTest {
         verifyNoMoreInteractions(loginView);
     }
 
+    @Test
+    public void performLogin_successfulCase_shouldOpenLandingPage() {
+        String email = "ius.maharjan@gmail.com";
+        String password = "Test123";
+
+        loginPresenter.performLogin(email, password);
+
+        verify(loginView).navigateToLandingPage();
+        verifyNoMoreInteractions(loginView);
+    }
+
     @After
     public void tearDown() {
         loginPresenter.detachView();
-        loginPresenter.dispose();
     }
 
 }

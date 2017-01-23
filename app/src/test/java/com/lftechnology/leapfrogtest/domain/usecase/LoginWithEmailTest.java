@@ -46,30 +46,32 @@ public class LoginWithEmailTest {
 
     @Test
     public void loginWithEmail_requiredFunctionsShouldBeCalled() {
-        TestObserver<Boolean> testObserver = TestObserver.create();
+        TestObserver<LoginWithEmail.ResponseModel> testObserver = TestObserver.create();
         when(authenticationRepository.login(anyString(), anyString())).thenReturn(Observable.just(user));
-        when(preferencesRepository.saveUserDetails(any(User.class))).thenReturn(Observable.just(true));
+        when(preferencesRepository.saveUserDetails(any(User.class))).thenReturn(Observable.just(user));
+        loginWithEmail.setRequestValues(new LoginWithEmail.RequestModel(EMAIL, PASSWORD));
 
-        loginWithEmail.execute(EMAIL, PASSWORD).subscribe(testObserver);
+        loginWithEmail.run().subscribe(testObserver);
 
         verify(authenticationRepository).login(EMAIL, PASSWORD);
         verify(preferencesRepository).saveUserDetails(user);
         verifyNoMoreInteractions(authenticationRepository);
         verifyNoMoreInteractions(preferencesRepository);
-        testObserver.assertResult(true);
+        testObserver.assertComplete();
     }
 
     @Test
     public void loginWithEmail_exceptionThrownDuringAuthentication() {
-        TestObserver<Boolean> testObserver = TestObserver.create();
+        TestObserver<LoginWithEmail.ResponseModel> testObserver = TestObserver.create();
         when(authenticationRepository.login(EMAIL, PASSWORD)).thenReturn(Observable.create(new ObservableOnSubscribe<User>() {
             @Override
             public void subscribe(ObservableEmitter<User> e) throws Exception {
                 throw new Exception();
             }
         }));
+        loginWithEmail.setRequestValues(new LoginWithEmail.RequestModel(EMAIL, PASSWORD));
 
-        loginWithEmail.execute(EMAIL, PASSWORD).subscribe(testObserver);
+        loginWithEmail.run().subscribe(testObserver);
 
         verify(authenticationRepository).login(EMAIL, PASSWORD);
         verifyNoMoreInteractions(authenticationRepository);
@@ -79,16 +81,17 @@ public class LoginWithEmailTest {
 
     @Test
     public void loginWithEmail_exceptionThrownDuringPreferenceUpdate() {
-        TestObserver<Boolean> testObserver = TestObserver.create();
+        TestObserver<LoginWithEmail.ResponseModel> testObserver = TestObserver.create();
         when(authenticationRepository.login(EMAIL, PASSWORD)).thenReturn(Observable.just(user));
-        when(preferencesRepository.saveUserDetails(user)).thenReturn(Observable.create(new ObservableOnSubscribe<Boolean>() {
+        when(preferencesRepository.saveUserDetails(user)).thenReturn(Observable.create(new ObservableOnSubscribe<User>() {
             @Override
-            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+            public void subscribe(ObservableEmitter<User> e) throws Exception {
                 throw new IOException();
             }
         }));
+        loginWithEmail.setRequestValues(new LoginWithEmail.RequestModel(EMAIL, PASSWORD));
 
-        loginWithEmail.execute(EMAIL, PASSWORD).subscribe(testObserver);
+        loginWithEmail.run().subscribe(testObserver);
 
         verify(authenticationRepository).login(EMAIL, PASSWORD);
         verify(preferencesRepository).saveUserDetails(user);
