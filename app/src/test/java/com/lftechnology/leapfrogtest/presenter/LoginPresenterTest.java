@@ -17,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -50,6 +51,7 @@ public class LoginPresenterTest {
 
     @Test
     public void performLogin_successfulCase_shouldOpenLandingPage() {
+        loginPresenter.attachView(loginView);
         String email = "ius.maharjan@gmail.com";
         String password = "Test123";
 
@@ -57,6 +59,22 @@ public class LoginPresenterTest {
 
         verify(loginView).navigateToLandingPage();
         verifyNoMoreInteractions(loginView);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void validateEmail_nullEmail_shouldThrowNullPointerException() {
+        loginPresenter.validateEmail(null);
+    }
+
+    @Test
+    public void validateEmail_emptyEmail_shouldDisplayValidationError() {
+        String email = "";
+
+        boolean result = loginPresenter.validateEmail(email);
+
+        verify(loginView).setEmailError(anyString());
+        assertThat(result).isFalse();
+
     }
 
     @After

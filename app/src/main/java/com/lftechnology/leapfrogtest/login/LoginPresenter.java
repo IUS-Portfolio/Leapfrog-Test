@@ -1,10 +1,14 @@
 package com.lftechnology.leapfrogtest.login;
 
+import android.support.annotation.NonNull;
+
 import com.lftechnology.leapfrogtest.UseCaseExecutor;
 import com.lftechnology.leapfrogtest.domain.usecase.LoginWithEmail;
 
 import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class LoginPresenter {
 
@@ -23,6 +27,36 @@ public class LoginPresenter {
 
     public void detachView() {
         this.loginView = null;
+    }
+
+    public boolean validateEmail(@NonNull String email) {
+        checkNotNull(email, "Email cannot be null");
+
+        boolean valid = true;
+
+        if (email.isEmpty()) {
+            valid = false;
+            loginView.setEmailError("Please enter your email address");
+        } else {
+            loginView.setEmailError(null);
+        }
+
+        return valid;
+    }
+
+    public boolean validatePassword(@NonNull String password) {
+        checkNotNull(password, "Password cannot be null");
+
+        boolean valid = true;
+
+        if (password.isEmpty()) {
+            valid = false;
+            loginView.setPasswordError("Please enter your password");
+        } else {
+            loginView.setPasswordError(null);
+        }
+
+        return valid;
     }
 
     public void performLogin(String email, String password) {

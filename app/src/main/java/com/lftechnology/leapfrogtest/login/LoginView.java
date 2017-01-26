@@ -1,14 +1,12 @@
 package com.lftechnology.leapfrogtest.login;
 
-/**
- * Created by ayush on 1/19/17.
- */
+import android.support.annotation.Nullable;
 
 public interface LoginView {
 
-    void showEmailError(String errorMessage);
+    void setEmailError(@Nullable String errorMessage);
 
-    void showPasswordError(String errorMessage);
+    void setPasswordError(@Nullable String errorMessage);
 
     void showLoginError(String errorMessage);
 
