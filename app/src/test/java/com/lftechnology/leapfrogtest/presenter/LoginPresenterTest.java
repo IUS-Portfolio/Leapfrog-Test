@@ -19,6 +19,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -45,7 +46,7 @@ public class LoginPresenterTest {
 
         loginPresenter.performLogin(email, password);
 
-        verify(loginView).showLoginError(anyString());
+        verify(loginView, timeout(2000)).showLoginError(anyString());
         verifyNoMoreInteractions(loginView);
     }
 
@@ -57,7 +58,7 @@ public class LoginPresenterTest {
 
         loginPresenter.performLogin(email, password);
 
-        verify(loginView).navigateToLandingPage();
+        verify(loginView, timeout(2000)).navigateToLandingPage();
         verifyNoMoreInteractions(loginView);
     }
 

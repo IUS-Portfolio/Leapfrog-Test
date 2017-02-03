@@ -72,8 +72,8 @@ public class LoginPresenter {
 
         @Override
         public void onError(Throwable exception) {
-            loginView.showLoginError(exception.getMessage());
             Timber.e(exception);
+            loginView.showLoginError(exception.getMessage());
         }
 
         @Override
