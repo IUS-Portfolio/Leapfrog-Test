@@ -2,6 +2,7 @@ package com.lftechnology.leapfrogtest.login;
 
 import android.support.annotation.NonNull;
 
+import com.lftechnology.leapfrogtest.R;
 import com.lftechnology.leapfrogtest.UseCaseExecutor;
 import com.lftechnology.leapfrogtest.domain.usecase.LoginWithEmail;
 
@@ -36,7 +37,7 @@ public class LoginPresenter {
 
         if (email.isEmpty()) {
             valid = false;
-            loginView.setEmailError("Please enter your email address");
+            loginView.setEmailError(loginView.getContext().getString(R.string.error_invalid_email));
         } else {
             loginView.setEmailError(null);
         }

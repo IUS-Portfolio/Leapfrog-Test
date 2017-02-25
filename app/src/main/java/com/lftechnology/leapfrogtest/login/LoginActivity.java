@@ -1,5 +1,6 @@
 package com.lftechnology.leapfrogtest.login;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -132,5 +133,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     @Override
     public void navigateToLandingPage() {
         d("Login Successful");
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 }

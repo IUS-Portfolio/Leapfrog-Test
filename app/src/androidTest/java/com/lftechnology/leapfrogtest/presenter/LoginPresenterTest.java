@@ -1,5 +1,10 @@
 package com.lftechnology.leapfrogtest.presenter;
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
+
+import com.lftechnology.leapfrogtest.R;
 import com.lftechnology.leapfrogtest.UseCaseExecutor;
 import com.lftechnology.leapfrogtest.data.MockAuthenticationRepository;
 import com.lftechnology.leapfrogtest.data.MockPreferencesRepository;
@@ -12,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
@@ -22,18 +27,25 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(AndroidJUnit4.class)
 public class LoginPresenterTest {
 
     private LoginPresenter loginPresenter;
+    private Context context;
 
     @Mock
     private LoginView loginView;
 
     @Before
     public void setup() {
+        MockitoAnnotations.initMocks(this);
+        context = InstrumentationRegistry.getTargetContext();
+        when(loginView.getContext()).thenReturn(context);
+
         Scheduler scheduler = Schedulers.single();
+
         LoginWithEmail loginWithEmail = new LoginWithEmail(new MockAuthenticationRepository(), new MockPreferencesRepository());
         loginPresenter = new LoginPresenter(new UseCaseExecutor(scheduler), loginWithEmail);
         loginPresenter.attachView(loginView);
@@ -73,9 +85,8 @@ public class LoginPresenterTest {
 
         boolean result = loginPresenter.validateEmail(email);
 
-        verify(loginView).setEmailError(anyString());
+        verify(loginView).setEmailError(context.getString(R.string.error_invalid_email));
         assertThat(result).isFalse();
-
     }
 
     @After
