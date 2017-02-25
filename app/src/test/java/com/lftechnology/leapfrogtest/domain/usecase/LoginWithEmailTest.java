@@ -10,11 +10,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
-
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
@@ -57,6 +56,12 @@ public class LoginWithEmailTest {
         verify(preferencesRepository).saveUserDetails(user);
         verifyNoMoreInteractions(authenticationRepository);
         verifyNoMoreInteractions(preferencesRepository);
+        testObserver.assertValue(new Predicate<LoginWithEmail.ResponseModel>() {
+            @Override
+            public boolean test(LoginWithEmail.ResponseModel responseModel) throws Exception {
+                return responseModel.getUser().equals(user);
+            }
+        });
         testObserver.assertComplete();
     }
 
@@ -86,7 +91,7 @@ public class LoginWithEmailTest {
         when(preferencesRepository.saveUserDetails(user)).thenReturn(Observable.create(new ObservableOnSubscribe<User>() {
             @Override
             public void subscribe(ObservableEmitter<User> e) throws Exception {
-                throw new IOException();
+                throw new Exception();
             }
         }));
         loginWithEmail.setRequestValues(new LoginWithEmail.RequestModel(EMAIL, PASSWORD));
@@ -97,6 +102,6 @@ public class LoginWithEmailTest {
         verify(preferencesRepository).saveUserDetails(user);
         verifyNoMoreInteractions(authenticationRepository);
         verifyNoMoreInteractions(preferencesRepository);
-        testObserver.assertError(IOException.class);
+        testObserver.assertError(Exception.class);
     }
 }
